@@ -2,6 +2,7 @@ import dotenv from "dotenv"
 import express from "express"
 import cors from "cors"
 import mongoose from "mongoose"
+import logger from "morgan"
 
 import testJwtRouter from "./controllers/test-jwt.js"
 import authRouter from "./controllers/auth.js"
