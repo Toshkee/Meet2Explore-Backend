@@ -1,21 +1,36 @@
 {
   "dependencies": {
     "bcrypt": "^6.0.0",
+<<<<<<< HEAD
+=======
+    "bcryptjs": "^3.0.3",
+>>>>>>> 11eaddf2356d11c2d1e236d23f9904cb6d27c5ac
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.20.0",
+<<<<<<< HEAD
     "morgan": "^1.10.1"
   },
   "name": "meet2explore",
   "version": "1.0.0",
   "description": "I am here",
+=======
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.11"
+  },
+  "name": "meet2explore",
+  "version": "1.0.0",
+  "description": "Meet2Explore MNE — Travel Buddy App for Montenegro",
+  "type": "module",
+>>>>>>> 11eaddf2356d11c2d1e236d23f9904cb6d27c5ac
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+<<<<<<< HEAD
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Toshkee/Meet2Explore.git"
@@ -27,4 +42,9 @@
     "url": "https://github.com/Toshkee/Meet2Explore/issues"
   },
   "homepage": "https://github.com/Toshkee/Meet2Explore#readme"
+=======
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+>>>>>>> 11eaddf2356d11c2d1e236d23f9904cb6d27c5ac
 }

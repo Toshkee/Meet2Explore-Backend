@@ -8,24 +8,35 @@ import testJwtRouter from "./controllers/test-jwt.js"
 import authRouter from "./controllers/auth.js"
 import userRouter from "./controllers/users.js"
 
-const port = 3000 || process.env.PORT
-
 dotenv.config();
 
 const app = express();
-mongoose.connect(process.env.MONGODB_URI);
-mongoose.connection.on("connected", () => {
-  console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
+const port = process.env.PORT || 3000;
+
+
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log(`Connected to MongoDB: ${mongoose.connection.name}`);
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err.message);
+  });
+
+mongoose.connection.on("error", (err) => {
+  console.error("MongoDB runtime error:", err.message);
 });
 
-app.use(cors())
-app.use(express.json())
+
+app.use(cors());
+app.use(express.json());
 app.use(logger("dev"));
 
-app.use("/test-jwt", testJwtRouter);
+
+app.use("/test-jwt", testJwtRouter); 
 app.use("/auth", authRouter);
-app.use("/users", userRouter);
+app.use("/trips", tripRouter);        
 
 app.listen(port, () => {
-  console.log("The express app is ready!");
+  console.log(`The express app is ready on port ${port}!`);
 });

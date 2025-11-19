@@ -1,23 +1,23 @@
-import express from "express"
+import express from "express";
+import jwt from "jsonwebtoken";
+
 const router = express.Router();
-import jwt from "jsonwebtoken"
 
-router.get("/sign-token", (req, res)=>{
-    // res.json({ message: 'You are authorized!' })
-      const user = {
-        _id: 1,
-        username: "test",
-        password: "test",
-      };
-      const token = jwt.sign({ user }, process.env.JWT_SECRET);
+router.get("/sign-token", (req, res) => {
+  const user = {
+    _id: 1,
+    username: "test",
+    password: "test",
+  };
 
-      res.json({ token });
-})
+  const token = jwt.sign({ user }, process.env.JWT_SECRET);
+
+  res.json({ token });
+});
 
 router.post("/verify-token", (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    // Add in verify method
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     res.json({ decoded });
@@ -26,4 +26,4 @@ router.post("/verify-token", (req, res) => {
   }
 });
 
-export default router
+export default router;
