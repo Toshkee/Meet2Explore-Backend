@@ -1,12 +1,12 @@
-import dotenv from "dotenv"
-import express from "express"
-import cors from "cors"
-import mongoose from "mongoose"
-import logger from "morgan"
+import dotenv from "dotenv";
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import logger from "morgan";
 
-import testJwtRouter from "./controllers/test-jwt.js"
-import authRouter from "./controllers/auth.js"
-import userRouter from "./controllers/users.js"
+import testJwtRouter from "./controllers/test-jwt.js";
+import authRouter from "./routes/auth.js";
+import tripRouter from "./routes/trips.js";
 
 dotenv.config();
 
