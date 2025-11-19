@@ -7,6 +7,7 @@ import logger from "morgan"
 import testJwtRouter from "./controllers/test-jwt.js"
 import authRouter from "./controllers/auth.js"
 import userRouter from "./controllers/users.js"
+import { Server } from "socket-I.O/socket.io.js"
 
 const port = 3000 || process.env.PORT
 
@@ -26,6 +27,6 @@ app.use("/test-jwt", testJwtRouter);
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 
-app.listen(port, () => {
-  console.log("The express app is ready!");
+server.listen(3000, () => {
+  console.log('listening on *:3000');
 });
