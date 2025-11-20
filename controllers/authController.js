@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import bcrypt from "bcryptjs";
+import bcrypt, { hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const generateToken = (id) => {
@@ -8,9 +8,9 @@ const generateToken = (id) => {
 
 export const registerUser = async (req, res) => {
   try {
-    const { username, password } = req.body || {};
+    const { username, hashedPassword } = req.body || {};
 
-    if (!username || !password) {
+    if (!username || !hashedPassword) {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
@@ -19,14 +19,16 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Username already taken" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      username,
-      password: hashedPassword,
+      username: req.body.username,
+      hashedPassword: bcrypt.hashSync(req.body.password, 10),
     });
 
-    const token = generateToken(user._id);
+    const payload = jwt.sign({ username: user.username, _id: user._id});
+
+    const token = jwt.sign({ payload }, process.env.JWT_SECRET);
+
 
     res.status(201).json({
       message: "User created",

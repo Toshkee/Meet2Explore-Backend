@@ -8,7 +8,10 @@ import http from "http"
 import testJwtRouter from "./controllers/test-jwt.js"
 import authRouter from "./routes/auth.js"
 import userRouter from "./controllers/users.js"
+<<<<<<< HEAD
 import tripRouter from "./routes/trips.js"
+=======
+>>>>>>> 5221fb255c2bc27b763063ca3e09fbc18970b8a0
 // import { socketServer } from "./socket-I.O/socket.io.js"
 const app = express();
 const server = http.createServer(app)
