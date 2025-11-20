@@ -19,3 +19,16 @@ export const deleteTrip = async (req, res) => {
     tripId: req.params.id
   });
 };
+
+export const getTrips = async (req, res) => {
+  res.json({
+    message: "All trips"
+  });
+};
+
+export const getTripById = async (req, res) => {
+  res.json({
+    message: "Single trip",
+    tripId: req.params.id
+  });
+};
