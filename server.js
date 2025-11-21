@@ -6,9 +6,10 @@ import logger from "morgan"
 import http from "http"
 
 import testJwtRouter from "./controllers/test-jwt.js"
-import authRouter from "./controllers/auth.js"
+import authRouter from "./routes/auth.js"
 import userRouter from "./controllers/users.js"
-import { socketServer } from "./socket-I.O/socket.io.js"
+import tripRouter from "./routes/trips.js"
+// import { socketServer } from "./socket-I.O/socket.io.js"
 const app = express();
 const server = http.createServer(app)
 
@@ -28,11 +29,14 @@ app.use(logger("dev"));
 
 
 app.use("/test-jwt", testJwtRouter); 
-app.use("/auth", authRouter);
-app.use("/trips", tripRouter);        
-app.use("/users", userRouter);
-socketServer(server);
+app.use("/api/auth", authRouter);
+app.use("/trips", tripRouter);   
+app.use("/users", userRouter); 
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+  // socketServer(server);
+
+server.listen(port, () => {
+  console.log(`The express app is ready on port ${port}!`);
 });
+
+
