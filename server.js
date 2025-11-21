@@ -1,19 +1,20 @@
-import dotenv from "dotenv"
-import express from "express"
-import cors from "cors"
-import mongoose from "mongoose"
-import logger from "morgan"
-import http from "http"
+// server.js
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import logger from "morgan";
+import http from "http";
 
-import testJwtRouter from "./controllers/test-jwt.js"
-import authRouter from "./routes/auth.js"
-import userRouter from "./controllers/users.js"
-import tripRouter from "./routes/trips.js"
-// import { socketServer } from "./socket-I.O/socket.io.js"
+import testJwtRouter from "./controllers/test-jwt.js";
+import authRouter from "./routes/auth.js";
+import userRouter from "./routes/users.js";   // <── OVO
+import tripRouter from "./routes/trips.js";
+
 const app = express();
-const server = http.createServer(app)
+const server = http.createServer(app);
 
-const port = 3000 || process.env.PORT
+const port = process.env.PORT || 3000;
 
 dotenv.config();
 
@@ -22,21 +23,15 @@ mongoose.connection.on("connected", () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
-
 app.use(cors());
 app.use(express.json());
 app.use(logger("dev"));
 
-
-app.use("/test-jwt", testJwtRouter); 
+app.use("/test-jwt", testJwtRouter);
 app.use("/api/auth", authRouter);
-app.use("/trips", tripRouter);   
-app.use("/users", userRouter); 
-
-  // socketServer(server);
+app.use("/api/trips", tripRouter);
+app.use("/api/users", userRouter);
 
 server.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
 });
-
-

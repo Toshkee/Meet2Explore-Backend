@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import bcrypt, { hash } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const generateToken = (id) => {
@@ -8,9 +8,9 @@ const generateToken = (id) => {
 
 export const registerUser = async (req, res) => {
   try {
-    const { username, hashedPassword } = req.body || {};
+    const { username, password } = req.body;
 
-    if (!username || !hashedPassword) {
+    if (!username || !password) {
       return res.status(400).json({ message: "Username and password are required" });
     }
 
@@ -19,41 +19,35 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Username already taken" });
     }
 
+    const hashed = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      username: req.body.username,
-      hashedPassword: bcrypt.hashSync(req.body.password, 10),
+      username,
+      password: hashed,
     });
 
-    const payload = jwt.sign({ username: user.username, _id: user._id});
-
-    const token = jwt.sign({ payload }, process.env.JWT_SECRET);
-
+    const token = generateToken(user._id);
 
     res.status(201).json({
       message: "User created",
       token,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message || "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body || {};
-
-    if (!username || !password) {
-      return res.status(400).json({ message: "Username and password are required" });
-    }
+    const { username, password } = req.body;
 
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -64,17 +58,15 @@ export const loginUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message || "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
-
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message || "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
