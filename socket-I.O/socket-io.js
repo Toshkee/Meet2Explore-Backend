@@ -1,42 +1,50 @@
 import { Server } from "socket.io";
-
-let onlineUsers = {};
+import Message from "../models/Message.js";
 
 export function socketServer(server) {
   const io = new Server(server, {
-    cors: {
-      origin: "*",
-    },
+    cors: { origin: "*" }
   });
 
   io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
 
-    socket.on("addUser", (userId) => {
-      onlineUsers[userId] = socket.id;
-      io.emit("onlineUsers", onlineUsers);
+    socket.on("joinActivity", ({ activityId, userId, username }) => {
+      const room = `activity_${activityId}`;
+      socket.join(room);
+
+      io.to(room).emit("systemMessage", {
+        text: `${username} joined the chat`,
+        username,
+        userId: String(userId),
+        timestamp: new Date().toISOString(),
+        system: true
+      });
     });
 
-    socket.on("typing", () => {
-      socket.broadcast.emit("typing", socket.id);
-    });
+    socket.on("sendMessage", async ({ activityId, userId, username, text }) => {
+      try {
+        const saved = await Message.create({
+          activityId,
+          userId,
+          username,
+          text
+        });
 
-    socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-      const receiverSocketId = onlineUsers[receiverId];
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("getMessage", { senderId, text });
+        const msg = {
+          _id: saved._id.toString(),
+          activityId: saved.activityId,
+          userId: saved.userId.toString(),
+          username: saved.username,
+          text: saved.text,
+          timestamp: saved.createdAt.toISOString()
+        };
+
+        io.to(`activity_${activityId}`).emit("receiveMessage", msg);
+
+      } catch (err) {
+        console.log("ERROR saving message:", err);
       }
     });
 
-    socket.on("disconnect", () => {
-      Object.keys(onlineUsers).forEach((userId) => {
-        if (onlineUsers[userId] === socket.id) {
-          delete onlineUsers[userId];
-        }
-      });
-      io.emit("onlineUsers", onlineUsers);
-      console.log("User disconnected");
-    });
   });
 }
-  

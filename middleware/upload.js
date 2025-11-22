@@ -1,16 +1,13 @@
 import multer from "multer";
-import path from "path";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "uploads/");
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "meet2explore-avatars",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
   },
-  filename(req, file, cb) {
-    cb(
-      null,
-      Date.now() + "-" + file.fieldname + path.extname(file.originalname)
-    );
-  }
 });
 
 export const upload = multer({ storage });
