@@ -17,10 +17,11 @@ import messageRouter from "./routes/messages.js";
 // Socket.io
 import { socketServer } from "./socket-I.O/socket-io.js";
 
-// Create express app FIRST
+// Create app + server
 const app = express();
 const server = http.createServer(app);
 
+// PORT
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
@@ -29,22 +30,37 @@ mongoose.connection.on("connected", () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
-// Middlewares
-app.use(cors());
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://meet-2-explore.netlify.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+app.options(/.*/, cors());
+
+// Body parser + logger
 app.use(express.json());
 app.use(logger("dev"));
 
-// Register routes AFTER app is created
+// Routes
 app.use("/test-jwt", testJwtRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/trips", tripRouter);
 app.use("/api/users", userRouter);
-app.use("/api/messages", messageRouter);  
+app.use("/api/messages", messageRouter);
 
-// Start Socket.io server
+// Start Socket.io
 socketServer(server);
 
-// Start HTTP server
+// Start server
 server.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
 });
