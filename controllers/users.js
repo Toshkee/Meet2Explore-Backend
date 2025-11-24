@@ -3,11 +3,11 @@ const router = express.Router();
 import jwt from "jsonwebtoken";
 import verifyToken from "../middleware/verify-token.js"
 
-import User from "../models/User.js";
+import User from "../models/userModel.js";
 
 router.get("/", verifyToken, async (req, res) => {
   try {
-    // Get a list of all users, but only return their username and _id
+   
     const users = await User.find({}, "username");
 
     res.json(users);
