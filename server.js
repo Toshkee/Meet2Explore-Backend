@@ -44,7 +44,7 @@ app.use("/api/messages", messageRouter);
 // Start Socket.io server
 socketServer(server);
 
-// // Start HTTP server
-// server.listen(port, () => {
-//   console.log(`The express app is ready on port ${port}!`);
-// });
+// Start HTTP server
+server.listen(port, () => {
+  console.log(`The express app is ready on port ${port}!`);
+});
